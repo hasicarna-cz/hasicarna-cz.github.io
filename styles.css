@@ -118,10 +118,10 @@ h3 { font-size: 21px; letter-spacing: -.02em; }
   background: linear-gradient(150deg, rgba(22,25,29,.92), rgba(9,11,13,.96));
   box-shadow: var(--shadow);
 }
-.stat-card { padding: 28px; min-height: 210px; }
+.stat-card { padding: 30px 28px; min-height: 176px; }
 .stat-card::after, .feature-card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 0 0, rgba(227,38,32,.10), transparent 34%); }
 .stat-icon { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; background: rgba(227,38,32,.10); border: 1px solid rgba(227,38,32,.28); color: var(--red-bright); font-weight: 900; font-size: 12px; }
-.stat-card strong { display: block; margin-top: 24px; font-size: 20px; }
+.stat-card strong { display: block; margin-top: 0; font-size: 20px; }
 .stat-card p { color: var(--muted); margin: 8px 0 0; }
 .features { padding-top: 80px; }
 .feature-grid { grid-template-columns: repeat(3, 1fr); }
@@ -360,3 +360,11 @@ body.modal-open { overflow: hidden; }
   .feature-modal-content { padding: 34px 26px 32px; }
   .feature-modal-close { top: 12px; right: 12px; }
 }
+
+.button.primary span {
+  margin-left: 10px;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform .2s ease;
+}
+.button.primary:hover span { transform: translateX(4px); }
