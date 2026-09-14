@@ -80,29 +80,35 @@
         <h2>Navržená pro každodenní provoz jednotky.</h2>
       </div>
       <div class="feature-grid">
-        <article class="feature-card reveal">
+        <article class="feature-card reveal" role="button" tabindex="0" aria-haspopup="dialog" data-feature="shifts">
           <h3>Směny a kalendář</h3>
           <p>Přehled služby, obsazení směn a plánování v jednom společném kalendáři.</p>
+          <span class="feature-more">Zobrazit detail <span aria-hidden="true">→</span></span>
         </article>
-        <article class="feature-card reveal">
+        <article class="feature-card reveal" role="button" tabindex="0" aria-haspopup="dialog" data-feature="equipment">
           <h3>Technika, revize a opravy</h3>
           <p>Evidence techniky, termínů revizí a kontrol i záznamů o provedených opravách na jednom místě.</p>
+          <span class="feature-more">Zobrazit detail <span aria-hidden="true">→</span></span>
         </article>
-        <article class="feature-card reveal">
+        <article class="feature-card reveal" role="button" tabindex="0" aria-haspopup="dialog" data-feature="members">
           <h3>Členové jednotky</h3>
           <p>Kontakty a důležité informace o členech na jednom přehledném místě.</p>
+          <span class="feature-more">Zobrazit detail <span aria-hidden="true">→</span></span>
         </article>
-        <article class="feature-card reveal">
+        <article class="feature-card reveal" role="button" tabindex="0" aria-haspopup="dialog" data-feature="announcements">
           <h3>Oznámení</h3>
           <p>Vedení jednotky může předávat členům důležité organizační informace.</p>
+          <span class="feature-more">Zobrazit detail <span aria-hidden="true">→</span></span>
         </article>
-        <article class="feature-card reveal">
+        <article class="feature-card reveal" role="button" tabindex="0" aria-haspopup="dialog" data-feature="events">
           <h3>Události</h3>
           <p>Připravované akce a důležité termíny jsou viditelné pro celou jednotku.</p>
+          <span class="feature-more">Zobrazit detail <span aria-hidden="true">→</span></span>
         </article>
-        <article class="feature-card reveal">
+        <article class="feature-card reveal" role="button" tabindex="0" aria-haspopup="dialog" data-feature="statistics">
           <h3>Statistiky</h3>
           <p>Rychlý přehled odpracovaných směn a hodin podle oprávnění uživatele.</p>
+          <span class="feature-more">Zobrazit detail <span aria-hidden="true">→</span></span>
         </article>
       </div>
     </section>
@@ -132,6 +138,24 @@
       </div>
     </section>
   </main>
+
+
+  <div class="feature-modal" id="feature-modal" aria-hidden="true">
+    <div class="feature-modal-backdrop" data-modal-close></div>
+    <section class="feature-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
+      <button class="feature-modal-close" type="button" aria-label="Zavřít detail" data-modal-close>×</button>
+      <div class="feature-modal-preview" id="feature-modal-preview">
+        <img src="assets/logo-shield.png" alt="" aria-hidden="true">
+        <span>Náhled obrazovky doplníme</span>
+      </div>
+      <div class="feature-modal-content">
+        <span class="eyebrow">Detail funkce</span>
+        <h2 id="feature-modal-title"></h2>
+        <p id="feature-modal-text"></p>
+        <ul id="feature-modal-list"></ul>
+      </div>
+    </section>
+  </div>
 
   <footer class="site-footer">
     <div class="footer-inner">
