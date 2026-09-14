@@ -125,8 +125,8 @@ h3 { font-size: 21px; letter-spacing: -.02em; }
 .stat-card p { color: var(--muted); margin: 8px 0 0; }
 .features { padding-top: 80px; }
 .feature-grid { grid-template-columns: repeat(3, 1fr); }
-.feature-card { padding: 30px; min-height: 235px; }
-.feature-icon { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 18px; background: linear-gradient(145deg, rgba(227,38,32,.16), rgba(227,38,32,.04)); border: 1px solid rgba(227,38,32,.34); color: var(--red-bright); font-size: 24px; font-weight: 900; margin-bottom: 28px; }
+.feature-card { padding: 30px; min-height: 190px; }
+.feature-card h3 { margin-top: 0; }
 .feature-card p { color: var(--muted); margin: 12px 0 0; }
 
 .security { padding-top: 70px; }
