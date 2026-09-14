@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070809">
+  <meta name="description" content="Ověření žádosti o smazání účtu Hasičárna.">
+  <title>Ověření žádosti | Hasičárna</title>
+  <link rel="icon" type="image/png" href="assets/logo-shield.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="legal-page">
+  <header class="site-header compact-header">
+    <div class="nav-shell">
+      <a class="nav-brand" href="index.html">
+        <img src="assets/logo-shield.png" alt="Logo Hasičárna">
+        <span>Hasičárna</span>
+      </a>
+      <nav class="nav-links legal-nav">
+        <a href="delete-account.html">Smazání účtu</a>
+        <a href="index.html">← Zpět na web</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="legal-shell">
+    <div class="legal-hero">
+      <span class="eyebrow">Ověření totožnosti</span>
+      <h1>Ověření žádosti</h1>
+      <p>
+        Pro potvrzení vlastníka účtu ověříme telefonní číslo vedené
+        u účtu Hasičárna pomocí jednorázového SMS kódu.
+      </p>
+    </div>
+
+    <article class="legal-card">
+      <section class="delete-section verify-step active" id="phone-step">
+        <h2>1. Potvrďte telefonní číslo</h2>
+        <p>
+          Zadejte stejné české telefonní číslo, které používáte pro přihlášení
+          do Hasičárny.
+        </p>
+        <div class="form-grid">
+          <div class="field">
+            <label for="verify-phone">Telefonní číslo</label>
+            <input id="verify-phone" type="tel" autocomplete="tel" maxlength="24"
+                   placeholder="+420 777 123 456">
+          </div>
+        </div>
+        <div id="recaptcha-container"></div>
+        <button id="send-sms" class="button primary" type="button">
+          Poslat ověřovací SMS
+        </button>
+        <div class="notice">
+          <strong>Ochrana soukromí</strong>
+          <p>
+            Při SMS ověření je telefonní číslo předáno službě Firebase
+            Authentication společnosti Google pouze za účelem ověření telefonu
+            a ochrany proti spamu a zneužití.
+          </p>
+        </div>
+      </section>
+
+      <section class="delete-section verify-step" id="code-step">
+        <h2>2. Zadejte SMS kód</h2>
+        <p>Na ověřované telefonní číslo jsme odeslali jednorázový kód.</p>
+        <div class="form-grid">
+          <div class="field">
+            <label for="sms-code">Ověřovací kód</label>
+            <input id="sms-code" class="verify-code" type="text"
+                   inputmode="numeric" autocomplete="one-time-code"
+                   maxlength="6" placeholder="000000">
+          </div>
+        </div>
+        <div class="delete-actions">
+          <button id="verify-code" class="button primary" type="button">
+            Ověřit kód
+          </button>
+        </div>
+      </section>
+
+      <section class="delete-section verify-step" id="success-step">
+        <h2>Žádost je ověřena</h2>
+        <div class="success-box">
+          Telefonní číslo bylo úspěšně ověřeno. Žádost o smazání účtu byla
+          předána k ručnímu vyřízení. Na kontaktní e-mail přijde potvrzení.
+        </div>
+        <p>
+          Účet se touto operací nemaže automaticky. Před odstraněním proběhne
+          kontrola žádosti. Pokud jde o jediného správce jednotky, musí být před
+          dokončením odstranění zajištěn jiný správce.
+        </p>
+      </section>
+
+      <section class="delete-section verify-step" id="error-step">
+        <h2>Ověření se nepodařilo</h2>
+        <p id="verify-error"></p>
+        <div class="delete-actions">
+          <a class="button secondary" href="delete-account.html">
+            Vytvořit novou žádost
+          </a>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer small-footer">
+    <div class="footer-inner">
+      <p class="copyright">© <span id="year"></span> Hasičárna</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script type="module">
+    import {initializeApp} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import {
+      getAuth,
+      RecaptchaVerifier,
+      signInWithPhoneNumber,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import {getFunctions, httpsCallable} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-functions.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyC6jxCKKZTvo-yj7fcVHPMpiY7wgKrC5C8",
+  authDomain: "zbrojnice-d7869.firebaseapp.com",
+  projectId: "zbrojnice-d7869",
+  storageBucket: "zbrojnice-d7869.firebasestorage.app",
+  messagingSenderId: "227925994076",
+  appId: "1:227925994076:web:a9a18c7646d5d3baed5499"
+};
+
+    const params = new URLSearchParams(window.location.search);
+    const requestId = params.get("request") || "";
+    const token = params.get("token") || "";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    auth.languageCode = "cs";
+
+    const functions = getFunctions(app, "europe-west3");
+    const prepare = httpsCallable(functions, "prepareExternalDeletionPhoneVerification");
+    const confirmVerified = httpsCallable(
+      functions,
+      "confirmExternalDeletionPhoneVerification"
+    );
+
+    let confirmationResult = null;
+    let recaptchaVerifier = null;
+    let recaptchaWidgetId = null;
+
+    const phoneStep = document.getElementById("phone-step");
+    const codeStep = document.getElementById("code-step");
+    const successStep = document.getElementById("success-step");
+    const errorStep = document.getElementById("error-step");
+    const errorText = document.getElementById("verify-error");
+    const sendButton = document.getElementById("send-sms");
+    const verifyButton = document.getElementById("verify-code");
+
+    function showOnly(element) {
+      [phoneStep, codeStep, successStep, errorStep].forEach((item) =>
+        item.classList.remove("active")
+      );
+      element.classList.add("active");
+    }
+
+    function fail(message) {
+      errorText.textContent =
+        message || "Ověření se nepodařilo. Vytvořte novou žádost.";
+      showOnly(errorStep);
+    }
+
+    function cleanError(error, fallback) {
+      const value = error && error.message ? error.message : fallback;
+      return value.replace(/^Firebase:\s*/i, "");
+    }
+
+    if (!requestId || !token) {
+      fail("Ověřovací odkaz je neplatný nebo neúplný.");
+    } else {
+      recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {theme: "dark"}
+      );
+      recaptchaWidgetId = await recaptchaVerifier.render();
+    }
+
+    sendButton.addEventListener("click", async () => {
+      const phone = document.getElementById("verify-phone").value.trim();
+      if (!phone) return;
+
+      sendButton.disabled = true;
+      sendButton.textContent = "Odesílám SMS…";
+
+      try {
+        const prepared = await prepare({requestId, token, phone});
+
+        if (prepared.data && prepared.data.verified === true) {
+          showOnly(successStep);
+          return;
+        }
+
+        confirmationResult = await signInWithPhoneNumber(
+          auth,
+          prepared.data.phone,
+          recaptchaVerifier
+        );
+        showOnly(codeStep);
+      } catch (error) {
+        try {
+          if (window.grecaptcha && recaptchaWidgetId !== null) {
+            window.grecaptcha.reset(recaptchaWidgetId);
+          }
+        } catch (_) {}
+
+        alert(cleanError(error, "SMS se nepodařilo odeslat."));
+      } finally {
+        sendButton.disabled = false;
+        sendButton.textContent = "Poslat ověřovací SMS";
+      }
+    });
+
+    verifyButton.addEventListener("click", async () => {
+      const code = document.getElementById("sms-code").value.trim();
+
+      if (!/^\d{6}$/.test(code) || !confirmationResult) {
+        alert("Zadejte šestimístný kód z SMS.");
+        return;
+      }
+
+      verifyButton.disabled = true;
+      verifyButton.textContent = "Ověřuji…";
+
+      try {
+        const credential = await confirmationResult.confirm(code);
+        await credential.user.getIdToken(true);
+        await confirmVerified({requestId, token});
+
+        try {
+          await signOut(auth);
+        } catch (_) {}
+
+        showOnly(successStep);
+      } catch (error) {
+        alert(cleanError(error, "Kód se nepodařilo ověřit."));
+      } finally {
+        verifyButton.disabled = false;
+        verifyButton.textContent = "Ověřit kód";
+      }
+    });
+  </script>
+</body>
+</html>

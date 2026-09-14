@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#070809">
-  <meta name="description" content="Postup pro smazání účtu v aplikaci Hasičárna.">
+  <meta name="description" content="Smazání uživatelského účtu aplikace Hasičárna.">
   <title>Smazání účtu | Hasičárna</title>
   <link rel="icon" type="image/png" href="assets/logo-shield.png">
   <link rel="stylesheet" href="styles.css">
@@ -13,38 +13,218 @@
   <header class="site-header compact-header">
     <div class="nav-shell">
       <a class="nav-brand" href="index.html">
-        <img src="assets/logo-shield.png" alt="Logo Hasičárna"><span>Hasičárna</span>
+        <img src="assets/logo-shield.png" alt="Logo Hasičárna">
+        <span>Hasičárna</span>
       </a>
-      <nav class="nav-links legal-nav"><a href="index.html">← Zpět na web</a></nav>
+      <nav class="nav-links legal-nav">
+        <a href="privacy.html">Soukromí</a>
+        <a href="index.html">← Zpět na web</a>
+      </nav>
     </div>
   </header>
 
   <main class="legal-shell">
     <div class="legal-hero">
-      <span class="eyebrow">Účet a data</span>
+      <span class="eyebrow">Účet a osobní údaje</span>
       <h1>Smazání účtu</h1>
-      <p>Jak požádat o odstranění účtu a údajů souvisejících s používáním Hasičárny.</p>
+      <p>
+        Účet můžete smazat přímo v aplikaci. Pokud už do aplikace nemáte
+        přístup, můžete níže podat ověřenou žádost o smazání.
+      </p>
     </div>
 
     <article class="legal-card delete-card">
-      <div class="steps">
-        <div class="step"><span>1</span><div><h2>Otevřete aplikaci Hasičárna</h2><p>Přihlaste se ke svému účtu, pokud je to možné.</p></div></div>
-        <div class="step"><span>2</span><div><h2>Přejděte do nastavení / profilu</h2><p>Vyhledejte správu svého účtu a možnost požádat o jeho odstranění, pokud je v dané verzi aplikace dostupná.</p></div></div>
-        <div class="step"><span>3</span><div><h2>Pokud se přihlásit nemůžete</h2><p>Požádejte správce své jednotky o pomoc s odstraněním nebo deaktivací účtu. Pro ověření může být nutné potvrdit, ke které jednotce účet patří.</p></div></div>
-      </div>
+      <p class="updated">Poslední aktualizace: 14. září 2026</p>
 
-      <div class="notice">
-        <strong>Co se stane po smazání?</strong>
-        <p>Účet přestane být aktivní a osobní údaje spojené s účtem budou odstraněny nebo anonymizovány v rozsahu, který umožňuje technický provoz a oprávněné potřeby jednotky. Některé provozní záznamy mohou zůstat bez přímého propojení na aktivní účet, pokud je jejich zachování nutné pro kontinuitu evidence.</p>
-      </div>
+      <div class="delete-layout">
+        <section class="delete-section">
+          <h2>Smazání přímo v aplikaci</h2>
+          <p>
+            Pokud se můžete do Hasičárny přihlásit, je nejrychlejší smazat účet
+            přímo v aplikaci.
+          </p>
+          <div class="delete-path">Můj profil → Smazat účet</div>
+          <p>
+            Aplikace nejprve zobrazí informace o následcích smazání a poté
+            požádá o zadání vašeho současného PINu. Teprve po jeho správném
+            ověření se smazání provede.
+          </p>
+          <div class="warning-note">
+            <strong>Jediný správce jednotky svůj účet přímo smazat nemůže.</strong>
+            Nejprve musí být určen jiný správce, aby jednotka nezůstala bez správy.
+          </div>
+        </section>
 
-      <p class="legal-note">Pokud používáte Hasičárnu v rámci konkrétní jednotky, správce jednotky je nejrychlejší cesta k ověření a vyřízení požadavku.</p>
+        <section class="delete-section">
+          <h2>Žádost bez přístupu do aplikace</h2>
+          <p>
+            Pokud se do aplikace nemůžete přihlásit, můžete podat ověřenou žádost.
+            Z bezpečnostních důvodů se samotný účet po odeslání formuláře nesmaže
+            automaticky.
+          </p>
+
+          <form id="delete-request-form" class="form-grid" novalidate>
+            <div class="field">
+              <label for="email">Kontaktní e-mail</label>
+              <input id="email" name="email" type="email" autocomplete="email"
+                     maxlength="160" required placeholder="vas@email.cz">
+              <div class="field-help">
+                Na tento e-mail přijde časově omezený odkaz pro pokračování
+                v ověření žádosti.
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="phone">Telefonní číslo účtu Hasičárna</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel"
+                     maxlength="24" required placeholder="+420 777 123 456">
+              <div class="field-help">
+                Zadejte stejné telefonní číslo, které používáte pro přihlášení.
+                Svůj PIN sem nikdy nezadávejte.
+              </div>
+            </div>
+
+            <button id="submit-request" class="button primary" type="submit">
+              Odeslat žádost o smazání
+            </button>
+          </form>
+
+          <div id="request-status" class="form-status" role="status"></div>
+
+          <div class="notice">
+            <strong>Jak probíhá ověření</strong>
+            <p>
+              Pokud údaje odpovídají aktivnímu účtu, přijde na uvedený e-mail
+              ověřovací odkaz. Po jeho otevření znovu zadáte telefonní číslo.
+              Firebase následně odešle jednorázový SMS kód. Po úspěšném ověření
+              telefonu bude žádost označena jako ověřená a předána k ručnímu
+              vyřízení.
+            </p>
+          </div>
+
+          <p class="legal-note">
+            Z bezpečnostních důvodů stránka neprozrazuje, zda konkrétní telefonní
+            číslo v Hasičárně existuje. Pokud e-mail nedorazí, zkontrolujte zadané
+            údaje a složku Spam.
+          </p>
+        </section>
+
+        <section class="delete-section">
+          <h2>Co se při smazání odstraní</h2>
+          <ul class="data-list">
+            <li>telefonní číslo používané pro přihlášení,</li>
+            <li>PIN a související přihlašovací údaje,</li>
+            <li>aktivní přihlašovací relace a vazba aktivního zařízení,</li>
+            <li>push tokeny a osobní nastavení oznámení,</li>
+            <li>profilová fotografie,</li>
+            <li>záznamy dostupnosti člena,</li>
+            <li>osobní záznamy o přečtených zprávách a oznámeních,</li>
+            <li>obsazení uživatele v aktuálních a budoucích uložených směnách.</li>
+          </ul>
+          <p>
+            Neuzavřené žádosti o výměnu nebo záskok jsou při odstranění účtu
+            zrušeny.
+          </p>
+        </section>
+
+        <section class="delete-section">
+          <h2>Co může zůstat zachováno</h2>
+          <p>
+            Kvůli provozní historii jednotky není při smazání odstraněn úplně
+            každý historický údaj. U minulých směn může zůstat jméno bývalého
+            člena a minimální interní záznam potřebný k zachování historie.
+          </p>
+          <ul class="data-list">
+            <li>jméno bývalého člena u historických záznamů,</li>
+            <li>minimální auditní záznam o smazání nebo vyřazení,</li>
+            <li>informace o tom, kdo administrativní operaci provedl,</li>
+            <li>datum a čas provedení operace.</li>
+          </ul>
+          <p>
+            Tyto údaje už neslouží k aktivnímu přihlášení ani běžnému používání
+            účtu.
+          </p>
+        </section>
+
+        <section class="delete-section">
+          <h2>Kontakt</h2>
+          <p>
+            Pokud máte s žádostí problém, kontaktujte technickou podporu:
+            <strong>Josef Černák</strong> ·
+            <a href="mailto:pepacernak@gmail.com">pepacernak@gmail.com</a>
+          </p>
+          <p>
+            <strong>Nikdy neposílejte svůj přihlašovací PIN e-mailem.</strong>
+            Podpora jej k vyřízení žádosti nepotřebuje.
+          </p>
+        </section>
+      </div>
     </article>
   </main>
 
   <footer class="site-footer small-footer">
-    <div class="footer-inner"><p class="copyright">© <span id="year"></span> Hasičárna</p></div>
+    <div class="footer-inner">
+      <p class="copyright">© <span id="year"></span> Hasičárna</p>
+    </div>
   </footer>
+
   <script src="script.js"></script>
+  <script type="module">
+    import {initializeApp} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import {getFunctions, httpsCallable} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-functions.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyC6jxCKKZTvo-yj7fcVHPMpiY7wgKrC5C8",
+  authDomain: "zbrojnice-d7869.firebaseapp.com",
+  projectId: "zbrojnice-d7869",
+  storageBucket: "zbrojnice-d7869.firebasestorage.app",
+  messagingSenderId: "227925994076",
+  appId: "1:227925994076:web:a9a18c7646d5d3baed5499"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const functions = getFunctions(app, "europe-west3");
+    const createRequest = httpsCallable(functions, "createExternalDeletionRequest");
+
+    const form = document.getElementById("delete-request-form");
+    const button = document.getElementById("submit-request");
+    const statusBox = document.getElementById("request-status");
+
+    function showStatus(message, isError = false) {
+      statusBox.textContent = message;
+      statusBox.classList.toggle("error", isError);
+      statusBox.style.display = "block";
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      button.disabled = true;
+      button.textContent = "Odesílám…";
+      statusBox.style.display = "none";
+
+      try {
+        await createRequest({
+          email: document.getElementById("email").value.trim(),
+          phone: document.getElementById("phone").value.trim()
+        });
+
+        form.reset();
+        showStatus(
+          "Pokud údaje odpovídají aktivnímu účtu Hasičárna, odeslali jsme " +
+          "na uvedený e-mail ověřovací odkaz. Odkaz platí 24 hodin."
+        );
+      } catch (error) {
+        const message = error && error.message
+          ? error.message
+          : "Žádost se nepodařilo odeslat. Zkuste to později.";
+        showStatus(message.replace(/^Firebase:\s*/i, ""), true);
+      } finally {
+        button.disabled = false;
+        button.textContent = "Odeslat žádost o smazání";
+      }
+    });
+  </script>
 </body>
 </html>
